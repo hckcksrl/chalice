@@ -1,4 +1,5 @@
 from chalice import Chalice
+import requests
 
 app = Chalice(app_name='chalice')
 
@@ -7,6 +8,18 @@ app = Chalice(app_name='chalice')
 def index():
     return {'hello': 'world'}
 
+@app.route('/bithumb/{coin}')
+def bithumb(coin):
+    api = f'https://api.bithumb.com/public/ticker/{coin}'
+    data = requests.get(api)
+
+    if data.status_code == 400 :
+        return {
+            'error': 'not exist coin'
+        }
+    return{
+        'data' : data.json()['data']
+    }
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to '/'.
